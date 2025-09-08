@@ -1,26 +1,30 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Provider/AuthProvider";
 
 const Login = () => {
+  const { userLogin, setUser } = useContext(AuthContext);
+  const [error, setError] = useState({});
 
-    const {userLogin, setUser} = useContext(AuthContext)
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location);
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
     console.log(email, password);
-    userLogin(email,password)
-    .then(res => {
+    userLogin(email, password)
+      .then((res) => {
         const user = res.user;
         setUser(user);
         console.log(user);
-    })
-    .catch(e =>{
-        alert(e.code);
-    })
+        navigate(location?.state ? location.state : "/");
+      })
+      .catch((err) => {
+        setError({ ...error, login: err.code });
+      });
   };
 
   return (
@@ -35,6 +39,7 @@ const Login = () => {
               <label className="label">Email</label>
               <input
                 name="email"
+                autoComplete="true"
                 type="email"
                 className="input"
                 placeholder="Email"
@@ -42,10 +47,12 @@ const Login = () => {
               <label className="label">Password</label>
               <input
                 name="password"
+                autoComplete="true"
                 type="password"
                 className="input"
                 placeholder="Password"
               />
+              {error.login && <label className="label text-sm text-red-600">{error.login}</label>}
               <div>
                 <a className="link link-hover">Forgot password?</a>
               </div>

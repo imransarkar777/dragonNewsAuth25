@@ -8,7 +8,14 @@ const Navbar = () => {
   return (
     <div className="flex justify-between items-center">
       <div className="">
-        <h2>{user && user.name}</h2>
+        {
+          user && user?.email ? (<div>
+            <img className="rounded-full w-10" src={user?.photoURL} alt="" />
+            <p>{user.displayName}</p>
+          </div>
+          
+        ) : ""
+        }
       </div>
       <div className="nav space-x-5">
         <Link to="/">Home</Link>
